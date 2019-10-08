@@ -25,7 +25,7 @@ class Product:
         return self.quantity
 
     def set_disqount(self, price):
-        self.price -= price
+        self.price -= price * self.price / 100
         return self.price
 
 p = Product('Sport', 'Football T-Shirt', 100, 30)
