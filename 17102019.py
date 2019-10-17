@@ -1,5 +1,5 @@
-#task 1
-#almost working 
+
+#not all
 
 def square_nums(nums):
     return [num ** 2 for num in nums]
@@ -9,16 +9,13 @@ def remove_negatives(nums):
 
 
 def choose_func(nums: list, func1, func2):
-    result = []
-    positives = []
-    if positives:
-        result.append(func1(positives))
+    if not all (num > 0 for num in nums):
+       print(func2(nums))
     else:
-        result.append(func2(nums))
-    return result
+       print(func1(nums))
 
 
-#working
+# if any
 
 def square_nums(nums):
     return [num ** 2 for num in nums]
@@ -28,9 +25,9 @@ def remove_negatives(nums):
 
 
 def choose_func(nums: list, func1, func2):
-    result = []
-    if any(map(lambda x: x<0, nums)):
-        result.append(func2(nums))
+    if any (num < 0 for num in nums):
+       print(func2(nums))
     else:
-        result.append(func1(nums))
-    return result
+       print(func1(nums))
+
+
