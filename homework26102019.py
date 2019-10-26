@@ -9,8 +9,8 @@ class Logger:
         self.file = open(self.path, self.mode)
         return self
 
-    def write(self, func):
-        self.file.write(f'{time.time()} {func}\n')
+    def write(self, value):
+        self.file.write(f'{time.ctime()} {value}\n')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return self.file.close()
