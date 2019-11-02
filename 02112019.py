@@ -47,7 +47,7 @@ class Album:
 
 
 class Song:
-    def __init__(self, name, artist, features, year, duration, album):
+    def __init__(self, name, artist, features, year, duration, album=None):
         self.name = name
         self.artist = artist
         self.features = features
