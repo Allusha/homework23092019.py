@@ -1,0 +1,71 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+def get_artist_page(artist_name: str):
+    return requests.get(f'https://www.last.fm/ru/music/{artist_name}').text
+
+
+def get_album_page(link: str):
+    return requests.get(link).text
+
+
+def get_albums_page(artist_name: str, page_number: int):
+    return requests.get(f'https://www.last.fm/ru/music/{artist_name}/+albums?page={page_number}').text
+
+
+def fetch_album(album_page: str) -> dict:
+    soup = BeautifulSoup(album_page, 'html.parser')
+    album_name = soup.find('h1').text
+    artist_dirty = soup.find('span', {'itemprop': 'name'}).text
+    artist_dirty = str(artist_dirty)
+    artist_name = artist_dirty.replace('<span itemprop="name">', '')
+    artist_name = artist_name.replace('</span>', '')
+    year_dirty = soup.find_all('dd', {'class': 'catalogue-metadata-description'})[1].text
+    year = int(year_dirty.split(' ')[-1])
+    genre = None
+
+    songs = []
+    for tr in soup.find_all('tr', {'class': 'chartlist-row'}):
+        songs.append({
+            'name': tr.find(
+                'td',
+                {'class': 'chartlist-name'}
+            ).text.replace('\n', '').strip(),
+            'artist': artist_name,
+            'year': year,
+            'album': album_name
+        })
+
+    return {
+        'name': album_name,
+        'year': year,
+        'genre': None,
+        'artist': artist_name,
+        'songs': songs
+    }
+
+
+
+
+
+
+def fetch_albums_links(album_page: str):
+    soup = BeautifulSoup(album_page, 'html.parser')
+    section = soup.find('section', {'id': 'artist-albums-section'})
+    for a in section.find_all('a', {'class': 'link-block-target'}):
+        yield f'https://www.last.fm{a["href"]}'
+
+
+def parse_artist_info(artist_page: str) -> tuple:
+    soup = BeautifulSoup(artist_page, 'html.parser')
+    artist_name = soup.find('h1').text
+    try:
+        location = soup.find_all('dd', {'class':'catalogue-metadata-description'})[1].text
+    except IndexError:
+        location = 'undefind'
+
+    return artist_name, location
+
+
+print(fetch_album(get_album_page('https://www.last.fm/ru/music/Lana+Del+Rey/Born+to+Die+-+The+Paradise+Edition')))
