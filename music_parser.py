@@ -1,7 +1,6 @@
 import json
 import requests
 from bs4 import BeautifulSoup
-import datetime
 
 
 class AlbumParser:
@@ -26,10 +25,12 @@ class AlbumParser:
         return requests.get(f'https://www.last.fm/ru/music/{self.artist}/+albums?page={page_number}').text
 
     @staticmethod
-    def from_seconds(duration: str) -> datetime:
+    def from_seconds(duration: str) -> int:
         duration = float(duration.replace(':', '.'))
-        duration = datetime.timedelta(seconds=duration)
-        return duration
+        a = (duration // 1) * 60
+        b = duration % 1 * 100
+        return int(a + b)
+    
 
     @staticmethod
     def get_album_page(link: str):
@@ -79,3 +80,4 @@ class AlbumParser:
 
 p1 = AlbumParser('Sia')
 AlbumParser.to_json(p1)
+
